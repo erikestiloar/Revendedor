@@ -15,6 +15,7 @@
   color-scheme:light;
 }
 *{box-sizing:border-box}
+[hidden]{display:none!important}
 html{scroll-behavior:smooth}
 body{margin:0;background:#ffffff;color:var(--text);font-family:var(--body);font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased}
 
@@ -116,15 +117,43 @@ input{min-height:48px;padding:0 16px;border:1px solid #CFD6E0;border-radius:6px;
 input:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px rgba(28,100,232,.15)}
 input::placeholder{color:#7A8699}
 form .btn{justify-content:center;margin-top:4px;border-radius:6px}
-.ok{color:#137A3F;font-size:14px;font-weight:600;margin:0}
 
+.consent{display:flex;gap:10px;align-items:flex-start;font-size:13px;font-weight:400;line-height:1.5;color:var(--muted);text-align:left;cursor:pointer;margin-top:2px}
+.consent input{min-height:0;width:18px;height:18px;margin:1px 0 0;padding:0;flex:none;accent-color:var(--blue);cursor:pointer}
+.link{background:none;border:0;padding:0;font:inherit;color:var(--blue);text-decoration:underline;cursor:pointer}
+input.bad{border-color:#C62828;box-shadow:0 0 0 3px rgba(198,40,40,.12)}
+.form-err{margin:-4px 0 0;font-size:13px;color:#C62828;text-align:left}
+.privacy{position:fixed;inset:0;z-index:100;background:rgba(6,18,40,.6);display:flex;align-items:center;justify-content:center;padding:max(16px,env(safe-area-inset-top,0px)) max(16px,env(safe-area-inset-right,0px)) max(16px,env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px))}
+.privacy[hidden]{display:none}
+.privacy-box{position:relative;background:#fff;color:var(--text);border-radius:14px;max-width:520px;width:100%;max-height:100%;overflow-y:auto;padding:36px 32px}
+.privacy-box h3{font-size:28px;margin:0 40px 16px 0}
+.privacy-date{margin:0 0 20px;font-size:13px;color:var(--muted)}
+.privacy-box h4{font-size:15px;font-weight:700;margin:20px 0 6px}
+.privacy-box p{margin:0 0 14px;font-size:15px;line-height:1.65;color:#33435C}
+.privacy-close{position:absolute;top:12px;right:12px;width:44px;height:44px;border:0;border-radius:8px;background:transparent;color:var(--muted);cursor:pointer;display:flex;align-items:center;justify-content:center}
+.privacy-close:hover{background:var(--mist);color:var(--text)}
+@media (max-width:600px){.privacy-box{padding:28px 20px}.privacy-box h3{font-size:24px}}
+form{position:relative}
+.form-done{position:absolute;inset:0;border-radius:inherit;background:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;text-align:center;padding:24px;opacity:0;transition:opacity .35s ease}
+.form-done.show{opacity:1}
+.form-done strong{font-family:var(--display);font-size:26px;font-weight:700;color:var(--text);margin-top:8px}
+.form-done span{font-size:15px;color:var(--muted)}
+.check{width:76px;height:76px;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.check circle{stroke:#16A34A;stroke-width:3;stroke-dasharray:151;stroke-dashoffset:151;transform:rotate(-90deg);transform-origin:center}
+.check path{stroke:#16A34A;stroke-width:4;stroke-dasharray:36;stroke-dashoffset:36}
+.form-done.show .check{animation:pop .45s cubic-bezier(.2,.9,.3,1.3) .55s both}
+.form-done.show .check circle{animation:draw .6s ease-out .1s forwards}
+.form-done.show .check path{animation:draw .35s ease-out .6s forwards}
+.form-done.show strong,.form-done.show span{animation:rise .5s ease .7s both}
+@keyframes draw{to{stroke-dashoffset:0}}
+@keyframes pop{0%{transform:scale(1)}50%{transform:scale(1.12)}100%{transform:scale(1)}}
 /* footer */
 .foot{background:var(--ink);color:#8E9BB2;font-size:14px;border-top:1px solid rgba(255,255,255,.06)}
 .foot .wrap{display:flex;flex-wrap:wrap;gap:16px 32px;align-items:center;justify-content:space-between;padding-block:28px}
 .foot nav{display:flex;flex-wrap:wrap;gap:8px 28px}
 .foot nav a{color:#C3CDDC;text-decoration:none;transition:color .2s}
 .foot nav a:hover{color:#fff}
-.foot p{margin:0}
+.foot p{margin:0}.foot-link{color:#C3CDDC;margin-left:8px}.foot-link:hover{color:#fff}
 /* reveal */
 .reveal{animation:rise .8s cubic-bezier(.2,.7,.2,1) both;animation-timeline:view();animation-range:entry 0% entry 35%}
 
@@ -245,10 +274,16 @@ form .btn{justify-content:center;margin-top:4px;border-radius:6px}
     </div>
     <form id="lead-form" class="reveal" novalidate>
       <label class="sr" for="f-nome">Seu nome</label><input id="f-nome" type="text" placeholder="Seu nome" autocomplete="name" required>
-      <label class="sr" for="f-whats">Seu telefone com DDD</label><input id="f-whats" type="tel" inputmode="tel" placeholder="Seu telefone com DDD" autocomplete="tel" required>
-      <label class="sr" for="f-cidade">Sua cidade e Estado</label><input id="f-cidade" type="text" placeholder="Sua cidade e Estado" autocomplete="address-level2">
+      <label class="sr" for="f-whats">Seu telefone com DDD</label><input id="f-whats" type="tel" inputmode="tel" placeholder="(00) 00000-0000" autocomplete="tel" maxlength="15" required>
+      <label class="sr" for="f-cidade">Sua cidade e Estado</label><input id="f-cidade" type="text" placeholder="Sua cidade e Estado" autocomplete="address-level2" required>
+      <label class="consent" for="f-lgpd"><input id="f-lgpd" type="checkbox" required><span>Li e concordo com a <button type="button" class="link" data-open-privacy>Política de Privacidade</button> e autorizo a Estilo Ar a entrar em contato comigo sobre o Programa Revendedor Autorizado.</span></label>
+      <p class="form-err" id="f-err" hidden></p>
       <button class="btn btn-primary" type="submit">Enviar solicitação</button>
-      <p class="ok" id="f-ok" hidden>Recebemos seus dados. Nossa equipe entrará em contato em breve.</p>
+      <div class="form-done" id="f-done" aria-live="polite" hidden>
+        <svg class="check" viewBox="0 0 52 52" aria-hidden="true"><circle cx="26" cy="26" r="24"/><path d="M15 27l7.5 7.5L37 19"/></svg>
+        <strong>Solicitação enviada!</strong>
+        <span>Nossa equipe entrará em contato em breve.</span>
+      </div>
     </form>
   </div>
 </section>
@@ -289,18 +324,40 @@ form .btn{justify-content:center;margin-top:4px;border-radius:6px}
 <footer class="foot">
   <div class="wrap">
     <nav aria-label="Rodapé"><a href="#programa">O programa</a><a href="#produtos">Produtos</a><a href="#como-funciona">Como funciona</a><a href="#contato">Contato</a></nav>
-    <p>© 2026 Estilo Ar. Todos os direitos reservados.</p>
+    <p>© 2026 Estilo Ar. Todos os direitos reservados. <button type="button" class="link foot-link" data-open-privacy>Política de Privacidade</button></p>
   </div>
 </footer>
 
+
+<div class="privacy" id="privacy" hidden role="dialog" aria-modal="true" aria-labelledby="privacy-title">
+  <div class="privacy-box">
+    <button type="button" class="privacy-close" data-close-privacy aria-label="Fechar">
+      <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+    </button>
+    <h3 id="privacy-title">Política de Privacidade</h3>
+    <p>Os dados enviados neste formulário (nome, telefone e cidade) são usados apenas para a Estilo Ar entrar em contato com você sobre o Programa Revendedor Autorizado.</p>
+    <p>Não vendemos nem compartilhamos seus dados com terceiros. Eles ficam guardados só enquanto forem necessários para esse contato.</p>
+    <p>Conforme a LGPD (Lei nº 13.709/2018), você pode pedir a qualquer momento para ver, corrigir ou excluir seus dados, ou cancelar sua autorização, pelo e-mail [SEU E-MAIL].</p>
+  </div>
+</div>
 <script>
 document.getElementById('lead-form').addEventListener('submit',function(e){
   e.preventDefault();
-  var n=document.getElementById('f-nome'),w=document.getElementById('f-whats');
-  if(!n.value.trim()){n.focus();return}
-  if(!w.value.trim()){w.focus();return}
-  var b=this.querySelector('button');b.textContent='Solicitação enviada';b.disabled=true;
-  document.getElementById('f-ok').hidden=false;
+  var n=document.getElementById('f-nome'),w=document.getElementById('f-whats'),ci=document.getElementById('f-cidade'),c=document.getElementById('f-lgpd'),er=document.getElementById('f-err');
+  [n,w,ci].forEach(function(x){x.classList.remove('bad')});
+  function fail(el,msg){er.textContent=msg;er.hidden=false;if(el.classList)el.classList.add('bad');el.focus();}
+  if(n.value.trim().length<3)return fail(n,'Informe seu nome.');
+  var dig=w.value.replace(/\D/g,'');
+  if(dig.length<10)return fail(w,'Informe um telefone válido com DDD.');
+  if(ci.value.trim().length<3)return fail(ci,'Informe sua cidade e Estado.');
+  if(!c.checked)return fail(c,'Para continuar, aceite a Política de Privacidade.');
+  er.hidden=true;
+  var f=this,d=document.getElementById('f-done');
+  d.hidden=false;void d.offsetWidth;d.classList.add('show');
+  setTimeout(function(){
+    d.classList.remove('show');
+    setTimeout(function(){d.hidden=true;f.reset();},400);
+  },3200);
 });
 
 document.querySelectorAll('.dots[data-for]').forEach(function(nav){
@@ -314,6 +371,28 @@ document.querySelectorAll('.dots[data-for]').forEach(function(nav){
   },{passive:true});
   dots.forEach(function(d,k){d.addEventListener('click',function(){track.scrollTo({left:cards[k].offsetLeft-cards[0].offsetLeft,behavior:'smooth'})})});
 });
+
+(function(){
+  var m=document.getElementById('privacy'),last=null;
+  function open(e){last=e&&e.currentTarget;m.hidden=false;document.body.style.overflow='hidden';m.querySelector('.privacy-close').focus()}
+  function close(){m.hidden=true;document.body.style.overflow='';if(last)last.focus()}
+  document.querySelectorAll('[data-open-privacy]').forEach(function(b){b.addEventListener('click',function(e){e.preventDefault();e.stopPropagation();open(e)})});
+  m.querySelector('[data-close-privacy]').addEventListener('click',close);
+  m.addEventListener('click',function(e){if(e.target===m)close()});
+  m.addEventListener('keydown',function(e){if(e.key==='Escape')close()});
+  document.getElementById('f-lgpd').addEventListener('change',function(){if(this.checked)document.getElementById('f-err').hidden=true});
+})();
+
+(function(){
+  var w=document.getElementById('f-whats');
+  w.addEventListener('input',function(){
+    var d=w.value.replace(/\D/g,'').slice(0,11),o='';
+    if(d.length>0)o='('+d.slice(0,2);
+    if(d.length>=3)o+=') '+(d.length===11?d.slice(2,7)+(d.length>7?'-'+d.slice(7):''):d.slice(2,6)+(d.length>6?'-'+d.slice(6):''));
+    w.value=o;
+  });
+  ['f-nome','f-whats','f-cidade'].forEach(function(id){document.getElementById(id).addEventListener('input',function(){this.classList.remove('bad');document.getElementById('f-err').hidden=true})});
+})();
 </script>
 
 </body>
